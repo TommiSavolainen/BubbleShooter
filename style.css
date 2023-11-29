@@ -1,0 +1,14 @@
+body {
+    text-align: center;
+    background-color: gray;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+#peliAlusta{
+    width: 80%;
+    height: 500px;
+    background-color: darkgray;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 10px;
+}
