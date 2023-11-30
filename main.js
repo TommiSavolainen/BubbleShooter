@@ -51,19 +51,14 @@ function animate() {
     });
 }
 addEventListener('click', (e) => {
-    let angle = Math.atan2(e.clientY - canvas.height - 30, e.clientX - window.innerWidth / 2);
+    let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
     let velocity = {
         x: Math.cos(angle),
         y: Math.sin(angle),
     };
     ammukset.push(new Player(ammus_x, ammus_y, playerRadius, players[0].color, { x: velocity.x, y: velocity.y }));
     console.log(e);
-    ctx.beginPath();
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = 'red';
-    ctx.moveTo(window.innerWidth / 2, canvas.height - 30);
-    ctx.lineTo(e.clientX, e.clientY);
-    ctx.stroke();
 });
 animate();
 console.dir(window);
+console.log(window.innerHeight - 40);
