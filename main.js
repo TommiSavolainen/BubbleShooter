@@ -91,8 +91,5 @@ addEventListener('click', (e) => {
         y: Math.sin(angle),
     };
     ammukset.push(new Player(ammus_x, ammus_y, playerRadius, players[0].color, { x: velocity.x, y: velocity.y }));
-    console.log(e);
 });
 animate();
-console.dir(window);
-console.log(window.innerHeight - 40);
