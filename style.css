@@ -3,6 +3,7 @@ body {
     background-color: gray;
     margin: 0;
     font-family: 'Poppins', sans-serif;
+    user-select: none;
 }
 #peliAlusta{
     width: 772px;
