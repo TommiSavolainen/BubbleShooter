@@ -83,14 +83,13 @@ let pallovali = 21;
 for (let rivi = 0; rivi < riveja; rivi++) {
     for (let i = 0; i < 36; i++) {
         let offset = rivi % 2 === 0 ? 0 : pallovali / 2;
-        
+
         pallot.push(new Pallo(pallo_x + offset, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
         pallo_x += 21;
         paikka += 1;
     }
     pallo_x = 11;
-    pallo_y += 21;
-
+    pallo_y += 20;
 }
 class Viiva {
     constructor(x, y, color) {
@@ -100,9 +99,10 @@ class Viiva {
         this.mousex = undefined;
         this.mousey = undefined;
     }
-    hiiriKoordinaatit(mousePos) {
+    hiiriKoordinaatit(mousePos, angle) {
         this.mousex = mousePos.x;
         this.mousey = mousePos.y;
+        this.angle = angle;
     }
 
     update() {
@@ -110,14 +110,16 @@ class Viiva {
         ctx.strokeStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(this.x - 30, this.y);
-        ctx.lineTo(this.mousex, this.mousey);
+        ctx.lineTo(this.x - 30 + 2.5 * palloRadius * Math.cos(this.angle), this.y - 2.5 * palloRadius * Math.sin(this.angle));
+        // ctx.lineTo(this.mousex, this.mousey);
         ctx.stroke();
     }
 }
 
 addEventListener('mousemove', (e) => {
     var mousePos = getMousePos(canvas, e);
-    viiva.hiiriKoordinaatit(mousePos);
+    let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
+    viiva.hiiriKoordinaatit(mousePos, angle);
 });
 function getMousePos(canvas, e) {
     var rect = canvas.getBoundingClientRect();
@@ -127,11 +129,11 @@ function getMousePos(canvas, e) {
     };
 }
 let viiva = new Viiva(viiva_x + 30, viiva_y, '#0000ff');
-for (i = 0; i < 36; i++) {
-    pallot.push(new Pallo(pallo_x, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
-    pallo_x += 21;
-    paikka += 1;
-}
+// for (i = 0; i < 36; i++) {
+//     pallot.push(new Pallo(pallo_x, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
+//     pallo_x += 21;
+//     paikka += 1;
+// }
 for (i = 0; i < 4; i++) {
     players.push(new Player(player_x, player_y, playerRadius, colors[Math.floor(Math.random() * colors.length)], { x: 1, y: 1 }));
     player_x -= 30;
