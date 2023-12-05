@@ -78,7 +78,7 @@ class Pallo {
     }
 }
 let riveja = 6; 
-let pallovali = 30; 
+let pallovali = 21; 
 
 for (let rivi = 0; rivi < riveja; rivi++) {
     for (let i = 0; i < 36; i++) {
