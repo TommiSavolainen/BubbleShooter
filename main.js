@@ -21,6 +21,8 @@ let paikka = 1;
 let pallo_x = 11;
 let pallo_y = 11;
 let nopeus = 4;
+
+// Luokka ammuttaville palloille
 class Player {
     constructor(x, y, radius, color, velocity) {
         this.x = x;
@@ -53,6 +55,8 @@ class Player {
         this.y = this.y + this.velocity.y;
     }
 }
+
+// Luokka pelikentän palloille
 class Pallo {
     constructor(x, y, radius, color, rivi, paikka, merkattu) {
         this.x = x;
@@ -77,6 +81,8 @@ class Pallo {
         this.draw();
     }
 }
+
+// Luodaan pallot pelikentälle
 // rivijä 6
 let riveja = 6;
 let pallovali = 21;
@@ -93,6 +99,8 @@ for (let rivi = 0; rivi < riveja; rivi++) {
     pallo_x = 11;
     pallo_y += 20;
 }
+
+// Luokka tähtäys viivan piirtämiseen
 class Viiva {
     constructor(x, y, color) {
         this.x = x;
@@ -118,6 +126,7 @@ class Viiva {
     }
 }
 
+// Haetaan hiiren koordinaatit ja lasketaan kulma
 addEventListener('mousemove', (e) => {
     var mousePos = getMousePos(canvas, e);
     let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
@@ -130,6 +139,8 @@ function getMousePos(canvas, e) {
         y: e.clientY - rect.top,
     };
 }
+
+// Luodaan uusi viiva objekti
 let viiva = new Viiva(viiva_x + 30, viiva_y, '#0000ff');
 
 for (i = 0; i < 4; i++) {
@@ -137,6 +148,7 @@ for (i = 0; i < 4; i++) {
     player_x -= 30;
 }
 
+// Pyöritetään animaatiota luupissa
 function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -167,21 +179,22 @@ function animate() {
     viiva.update();
 }
 
-// Check if two circles intersect
+// Tarkistetaan törmääkö ympyrät
 function tormaakoYmpyra(x1, y1, r1, x2, y2, r2) {
-    // Calculate the distance between the centers
+    // Lasketaan ympyröitten keskipisteiden välit
     var dx = x1 - x2;
     var dy = y1 - y2;
     var len = Math.sqrt(dx * dx + dy * dy);
 
     if (len < r1 - 1 + r2 - 1) {
-        // Circles intersect
+        // Ympyrät törmää
         return true;
     }
 
     return false;
 }
 
+// Ammutaan pallo, kun hiiren nappia painetaan
 addEventListener('click', (e) => {
     let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
     let velocity = {
