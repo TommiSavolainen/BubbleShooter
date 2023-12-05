@@ -77,6 +77,21 @@ class Pallo {
         this.draw();
     }
 }
+let riveja = 6; 
+let pallovali = 30; 
+
+for (let rivi = 0; rivi < riveja; rivi++) {
+    for (let i = 0; i < 36; i++) {
+        let offset = rivi % 2 === 0 ? 0 : pallovali / 2;
+        
+        pallot.push(new Pallo(pallo_x + offset, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
+        pallo_x += 21;
+        paikka += 1;
+    }
+    pallo_x = 11;
+    pallo_y += 21;
+
+}
 class Viiva {
     constructor(x, y, color) {
         this.x = x;
