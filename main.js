@@ -85,9 +85,10 @@ class Viiva {
         this.mousex = undefined;
         this.mousey = undefined;
     }
-    hiiriKoordinaatit(mousePos) {
+    hiiriKoordinaatit(mousePos, angle) {
         this.mousex = mousePos.x;
         this.mousey = mousePos.y;
+        this.angle = angle;
     }
 
     update() {
@@ -95,14 +96,16 @@ class Viiva {
         ctx.strokeStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(this.x - 30, this.y);
-        ctx.lineTo(this.mousex, this.mousey);
+        ctx.lineTo(this.x - 30 + 2.5 * palloRadius * Math.cos(this.angle), this.y - 2.5 * palloRadius * Math.sin(this.angle));
+        // ctx.lineTo(this.mousex, this.mousey);
         ctx.stroke();
     }
 }
 
 addEventListener('mousemove', (e) => {
     var mousePos = getMousePos(canvas, e);
-    viiva.hiiriKoordinaatit(mousePos);
+    let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
+    viiva.hiiriKoordinaatit(mousePos, angle);
 });
 function getMousePos(canvas, e) {
     var rect = canvas.getBoundingClientRect();
