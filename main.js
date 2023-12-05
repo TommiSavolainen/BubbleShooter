@@ -77,10 +77,12 @@ class Pallo {
         this.draw();
     }
 }
-let riveja = 6; 
-let pallovali = 21; 
+// rivijä 6
+let riveja = 6;
+let pallovali = 21;
 
 for (let rivi = 0; rivi < riveja; rivi++) {
+    // palloja 36
     for (let i = 0; i < 36; i++) {
         let offset = rivi % 2 === 0 ? 0 : pallovali / 2;
 
@@ -102,16 +104,16 @@ class Viiva {
     hiiriKoordinaatit(mousePos, angle) {
         this.mousex = mousePos.x;
         this.mousey = mousePos.y;
-        this.angle = angle;
+        this.angle = -angle;
     }
 
     update() {
+        let alkux = this.x - 30;
         ctx.lineWidth = 2;
         ctx.strokeStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(this.x - 30, this.y);
-        ctx.lineTo(this.x - 30 + 2.5 * palloRadius * Math.cos(this.angle), this.y - 2.5 * palloRadius * Math.sin(this.angle));
-        // ctx.lineTo(this.mousex, this.mousey);
+        ctx.lineTo(alkux + 8 * palloRadius * Math.cos(this.angle), this.y - 8 * palloRadius * Math.sin(this.angle));
         ctx.stroke();
     }
 }
@@ -129,11 +131,7 @@ function getMousePos(canvas, e) {
     };
 }
 let viiva = new Viiva(viiva_x + 30, viiva_y, '#0000ff');
-// for (i = 0; i < 36; i++) {
-//     pallot.push(new Pallo(pallo_x, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
-//     pallo_x += 21;
-//     paikka += 1;
-// }
+
 for (i = 0; i < 4; i++) {
     players.push(new Player(player_x, player_y, playerRadius, colors[Math.floor(Math.random() * colors.length)], { x: 1, y: 1 }));
     player_x -= 30;
@@ -142,8 +140,23 @@ for (i = 0; i < 4; i++) {
 function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ammukset.forEach((ammus) => {
+    ammukset.forEach((ammus, index) => {
         ammus.update();
+        pallot.forEach((pallo) => {
+            if (tormaakoYmpyra(ammus.x, ammus.y, ammus.radius, pallo.x, pallo.y, pallo.radius)) {
+                if (ammus.x > pallo.x) {
+                    if (pallot.indexOf(pallo.x + 10.5) == -1 && pallot.indexOf(pallo.y + 19) == -1) {
+                        pallot.push(new Pallo(pallo.x + 10.5, pallo.y + 19, palloRadius, ammus.color, pallo.rivi + 1, paikka, (merkattu = false)));
+                        ammukset.shift();
+                    }
+                } else if (pallot.indexOf(pallo.x - 10.5) == -1 && pallot.indexOf(pallo.y + 19) == -1) {
+                    pallot.push(new Pallo(pallo.x - 10.5, pallo.y + 19, palloRadius, ammus.color, pallo.rivi + 1, paikka, (merkattu = false)));
+                    ammukset.shift();
+                }
+                ammus.velocity.x = 0;
+                ammus.velocity.y = 0;
+            }
+        });
     });
     players.forEach((player) => {
         player.draw();
@@ -153,6 +166,22 @@ function animate() {
     });
     viiva.update();
 }
+
+// Check if two circles intersect
+function tormaakoYmpyra(x1, y1, r1, x2, y2, r2) {
+    // Calculate the distance between the centers
+    var dx = x1 - x2;
+    var dy = y1 - y2;
+    var len = Math.sqrt(dx * dx + dy * dy);
+
+    if (len < r1 - 1 + r2 - 1) {
+        // Circles intersect
+        return true;
+    }
+
+    return false;
+}
+
 addEventListener('click', (e) => {
     let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
     let velocity = {
