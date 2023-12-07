@@ -87,14 +87,18 @@ class Pallo {
 let riveja = 6;
 let pallovali = 21;
 
-for (let rivi = 0; rivi < riveja; rivi++) {
+for (let rivi = 1; rivi <= riveja; rivi++) {
     // palloja 36
     for (let i = 0; i < 36; i++) {
         let offset = rivi % 2 === 0 ? 0 : pallovali / 2;
 
         pallot.push(new Pallo(pallo_x + offset, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
         pallo_x += 21;
-        paikka += 1;
+        if (paikka >= 36) {
+            paikka = 1;
+        } else {
+            paikka += 1;
+        }
     }
     pallo_x = 11;
     pallo_y += 20;
@@ -158,12 +162,52 @@ function animate() {
             if (tormaakoYmpyra(ammus.x, ammus.y, ammus.radius, pallo.x, pallo.y, pallo.radius)) {
                 if (ammus.x > pallo.x) {
                     if (pallot.indexOf(pallo.x + 10.5) == -1 && pallot.indexOf(pallo.y + 19) == -1) {
-                        pallot.push(new Pallo(pallo.x + 10.5, pallo.y + 19, palloRadius, ammus.color, pallo.rivi + 1, paikka, (merkattu = false)));
+                        let parillinen = pallo.rivi + 1;
+                        let parillinenPaikka;
+                        if (parillinen % 2 == 0) {
+                            parillinenPaikka = pallo.paikka + 1;
+                            console.log(parillinen);
+                        } else {
+                            parillinenPaikka = pallo.paikka;
+                        }
+                        let tarkistettava = new Pallo(
+                            pallo.x + 10.5,
+                            pallo.y + 19,
+                            palloRadius,
+                            ammus.color,
+                            pallo.rivi + 1,
+                            parillinenPaikka,
+                            (merkattu = false)
+                        );
+                        pallot.push(tarkistettava);
+                        tarkistaPallotYmparilta(tarkistettava.paikka, tarkistettava.rivi, tarkistettava.color, tarkistettava.merkattu);
                         ammukset.shift();
                     }
-                } else if (pallot.indexOf(pallo.x - 10.5) == -1 && pallot.indexOf(pallo.y + 19) == -1) {
-                    pallot.push(new Pallo(pallo.x - 10.5, pallo.y + 19, palloRadius, ammus.color, pallo.rivi + 1, paikka, (merkattu = false)));
-                    ammukset.shift();
+                } else {
+                    let parillinen = pallo.rivi + 1;
+                    let parillinenPaikka;
+                    if (parillinen % 2 == 0) {
+                        parillinenPaikka = pallo.paikka;
+                        console.log(parillinen);
+                    } else {
+                        parillinenPaikka = pallo.paikka - 1;
+                    }
+                    if (pallot.indexOf(pallo.x - 10.5) == -1 && pallot.indexOf(pallo.y + 19) == -1) {
+                        let tarkistettava = new Pallo(
+                            pallo.x - 10.5,
+                            pallo.y + 19,
+                            palloRadius,
+                            ammus.color,
+                            pallo.rivi + 1,
+                            parillinenPaikka,
+                            (merkattu = false)
+                        );
+                        pallot.push(tarkistettava);
+                        tarkistaPallotYmparilta(tarkistettava.paikka, tarkistettava.rivi, tarkistettava.color, tarkistettava.merkattu);
+                        ammukset.shift();
+                        // console.log(pallo.paikka);
+                        // console.log(pallot);
+                    }
                 }
                 ammus.velocity.x = 0;
                 ammus.velocity.y = 0;
@@ -177,6 +221,52 @@ function animate() {
         pallo.update();
     });
     viiva.update();
+}
+
+// Tarkistetaan samanväriset pallot ympäriltä
+function tarkistaPallotYmparilta(tarkistusPaikka, tarkistusRivi, tarkistusVari, merkattu) {
+    console.log(tarkistusPaikka, tarkistusRivi, tarkistusVari, merkattu);
+    pallot.forEach((pallo) => {
+        if (tarkistusRivi % 2 == 0) {
+            if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi - 1) {
+                console.log('Vasen ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi - 1) {
+                console.log('Oikea ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi) {
+                console.log('Vasen: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi) {
+                console.log('Oikea: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi + 1) {
+                console.log('Vasen ala: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi + 1) {
+                console.log('Oikea ala: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+        } else {
+            if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi - 1) {
+                console.log('Vasen ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi - 1) {
+                console.log('Oikea ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi) {
+                console.log('Vasen: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi) {
+                console.log('Oikea: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi + 1) {
+                console.log('Vasen ala: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi + 1) {
+                console.log('Oikea ala: ' + pallo.paikka, pallo.rivi, pallo.color);
+            }
+        }
+    });
 }
 
 // Tarkistetaan törmääkö ympyrät
@@ -205,7 +295,6 @@ addEventListener('click', (e) => {
     ammukset.push(new Player(ammus_x, ammus_y, playerRadius, players[0].color, { x: velocity.x, y: velocity.y }));
     players.shift();
     luoUusiPlayer();
-    console.log(ammukset);
 });
 function luoUusiPlayer() {
     players.forEach((player) => {
