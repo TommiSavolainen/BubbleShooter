@@ -1,3 +1,12 @@
+*,
+*::before,
+*::after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
 body {
     text-align: center;
     background-color: gray;
@@ -5,6 +14,48 @@ body {
     font-family: 'Poppins', sans-serif;
     user-select: none;
 }
+
+.popup {
+    background-color: rgb(131, 207, 207);
+    width: 450px;
+    padding: 30px 40px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    border-radius: 8px;
+    font-family: "Poppins", sans-serif;
+}
+
+.popup button {
+    display: block;
+    margin: 0 0 20px auto;
+    background-color: transparent;
+    font-size: 30px;
+    color: #000000;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.popup p{
+    font-size: 14px;
+    text-align: justify;
+    margin: 20px 0;
+}
+
+a{
+    display: block;
+    width: 150px;
+    position: relative;
+    margin: auto;
+    text-align: center;
+    background-color: #0f72e5;
+    color: #ffff;
+    text-decoration: none;
+    padding: 5px 0;
+}
+
 #peliAlusta{
     width: 772px;
     height: 500px;

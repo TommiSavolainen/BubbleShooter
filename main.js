@@ -1,3 +1,14 @@
+document.querySelector("#close").addEventListener
+("click", function(){
+    document.querySelector(".popup").style.display =
+    "none";
+});
+document.querySelector("#pelaamaan").addEventListener
+("click", function(){
+    document.querySelector(".popup").style.display =
+    "none";
+});
+
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let peliAlusta = document.getElementById('peliAlusta');
@@ -23,6 +34,7 @@ let pallo_y = 11;
 let nopeus = 4;
 let palloLaskuri = 0;
 let palloLaskuri2 = 0;
+
 
 // Luokka ammuttaville palloille
 class Player {
