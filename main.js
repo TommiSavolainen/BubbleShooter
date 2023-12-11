@@ -135,15 +135,21 @@ class Viiva {
 // Haetaan hiiren koordinaatit ja lasketaan kulma
 addEventListener('mousemove', (e) => {
     var mousePos = getMousePos(canvas, e);
+    // let angle = Math.atan2(e.clientY - (canvas.height - 40), e.clientX - canvas.width / 2);
+
     let angle = Math.atan2(e.clientY - (window.innerHeight - 40), e.clientX - window.innerWidth / 2);
     viiva.hiiriKoordinaatit(mousePos, angle);
 });
 function getMousePos(canvas, e) {
     var rect = canvas.getBoundingClientRect();
     return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+        x: ((e.clientX - rect.left) / (rect.right - rect.left)) * canvas.width,
+        y: ((e.clientY - rect.top) / (rect.bottom - rect.top)) * canvas.height,
     };
+    // return {
+    //     x: e.clientX - rect.left,
+    //     y: e.clientY - rect.top,
+    // };
 }
 
 // Luodaan uusi viiva objekti
