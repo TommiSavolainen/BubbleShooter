@@ -70,7 +70,7 @@ function start() {
 
     // Luokka pelikentän palloille
     class Pallo {
-        constructor(x, y, radius, color, rivi, paikka, merkattu) {
+        constructor(x, y, radius, color, rivi, paikka, merkattu, kosketusKattoon) {
             this.x = x;
             this.y = y;
             this.radius = radius;
@@ -78,6 +78,7 @@ function start() {
             this.rivi = rivi;
             this.paikka = paikka;
             this.merkattu = merkattu;
+            this.kosketusKattoon = kosketusKattoon;
         }
 
         draw() {
@@ -104,7 +105,18 @@ function start() {
         for (let i = 0; i < 36; i++) {
             let offset = rivi % 2 === 0 ? 0 : pallovali / 2;
 
-            pallot.push(new Pallo(pallo_x + offset, pallo_y, palloRadius, colors[Math.floor(Math.random() * colors.length)], rivi, paikka, (merkattu = false)));
+            pallot.push(
+                new Pallo(
+                    pallo_x + offset,
+                    pallo_y,
+                    palloRadius,
+                    colors[Math.floor(Math.random() * colors.length)],
+                    rivi,
+                    paikka,
+                    (merkattu = false),
+                    (kosketusKattoon = false)
+                )
+            );
             pallo_x += 21;
             if (paikka >= 36) {
                 paikka = 1;
@@ -184,7 +196,6 @@ function start() {
                             let parillinenPaikka;
                             if (parillinen % 2 == 0) {
                                 parillinenPaikka = pallo.paikka + 1;
-                                console.log(parillinen);
                             } else {
                                 parillinenPaikka = pallo.paikka;
                             }
@@ -195,7 +206,8 @@ function start() {
                                 ammus.color,
                                 pallo.rivi + 1,
                                 parillinenPaikka,
-                                (merkattu = true)
+                                (merkattu = true),
+                                (kosketusKattoon = false)
                             );
                             pallot.push(tarkistettava);
                             tarkistaPallotYmparilta(tarkistettava.paikka, tarkistettava.rivi, tarkistettava.color, tarkistettava.merkattu);
@@ -206,7 +218,6 @@ function start() {
                         let parillinenPaikka;
                         if (parillinen % 2 == 0) {
                             parillinenPaikka = pallo.paikka;
-                            console.log(parillinen);
                         } else {
                             parillinenPaikka = pallo.paikka - 1;
                         }
@@ -218,7 +229,8 @@ function start() {
                                 ammus.color,
                                 pallo.rivi + 1,
                                 parillinenPaikka,
-                                (merkattu = true)
+                                (merkattu = true),
+                                (kosketusKattoon = false)
                             );
                             pallot.push(tarkistettava);
                             tarkistaPallotYmparilta(tarkistettava.paikka, tarkistettava.rivi, tarkistettava.color, tarkistettava.merkattu);
@@ -240,12 +252,67 @@ function start() {
         });
         viiva.update();
     }
+
+    function koskettaakoKattoonReset() {
+        pallot.forEach((pallo) => {
+            if (pallo.koskettaakoKattoon == true) {
+                pallo.kosketusKattoon = false;
+            }
+        });
+    }
+
+    function koskettaakoKattoon(tarkistusPaikka, tarkistusRivi) {
+        pallot.forEach((pallo) => {
+            if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi - 1) {
+                if (pallo.kosketusKattoon == false) {
+                    pallo.kosketusKattoon = true;
+                    // console.log('Löytyi!');
+                    koskettaakoKattoon(pallo.paikka, pallo.rivi);
+                }
+            }
+            if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi - 1) {
+                if (pallo.kosketusKattoon == false) {
+                    pallo.kosketusKattoon = true;
+                    // console.log('Löytyi!');
+                    koskettaakoKattoon(pallo.paikka, pallo.rivi);
+                }
+            }
+            if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi) {
+                if (pallo.kosketusKattoon == false) {
+                    pallo.kosketusKattoon = true;
+                    // console.log('Löytyi!');
+                    koskettaakoKattoon(pallo.paikka, pallo.rivi);
+                }
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi) {
+                if (pallo.kosketusKattoon == false) {
+                    pallo.kosketusKattoon = true;
+                    // console.log('Löytyi!');
+                    koskettaakoKattoon(pallo.paikka, pallo.rivi);
+                }
+            }
+            if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi + 1) {
+                if (pallo.kosketusKattoon == false) {
+                    pallo.kosketusKattoon = true;
+                    // console.log('Löytyi!');
+                    koskettaakoKattoon(pallo.paikka, pallo.rivi);
+                }
+            }
+            if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi + 1) {
+                if (pallo.kosketusKattoon == false) {
+                    pallo.kosketusKattoon = true;
+                    // console.log('Löytyi!');
+                    koskettaakoKattoon(pallo.paikka, pallo.rivi);
+                }
+            }
+        });
+    }
+
     // lasketaan merkatut pallot
     function lasketaanMerkatut() {
         pallot.forEach((pallo) => {
             if (pallo.merkattu == true) {
                 palloLaskuri += 1;
-                console.log(pallo);
             }
         });
     }
@@ -272,48 +339,41 @@ function start() {
 
     // Tarkistetaan samanväriset pallot ympäriltä
     function tarkistaPallotYmparilta(tarkistusPaikka, tarkistusRivi, tarkistusVari, merkattu) {
-        console.log(tarkistusPaikka, tarkistusRivi, tarkistusVari, merkattu);
         pallot.forEach((pallo) => {
             if (tarkistusRivi % 2 == 0) {
                 if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi - 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Vasen ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi - 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Oikea ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Vasen: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Oikea: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi + 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Vasen ala: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi + 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Oikea ala: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
@@ -321,42 +381,36 @@ function start() {
                 if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi - 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Vasen ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi - 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Oikea ylä: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka - 1 && pallo.rivi == tarkistusRivi) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Vasen: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Oikea: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka && pallo.rivi == tarkistusRivi + 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Vasen ala: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
                 if (pallo.paikka == tarkistusPaikka + 1 && pallo.rivi == tarkistusRivi + 1) {
                     if (pallo.color == tarkistusVari && pallo.merkattu == false) {
                         pallo.merkattu = true;
-                        console.log('Oikea ala: ' + pallo.paikka, pallo.rivi, pallo.color);
                         tarkistaPallotYmparilta(pallo.paikka, pallo.rivi, pallo.color, pallo.merkattu);
                     }
                 }
@@ -391,7 +445,17 @@ function start() {
         ammukset.push(new Player(ammus_x, ammus_y, playerRadius, players[0].color, { x: velocity.x, y: velocity.y }));
         players.shift();
         luoUusiPlayer();
+        koskettaakoKattoon(pallot[0].paikka, pallot[0].rivi);
+        koskettaakoInfo();
+        koskettaakoKattoonReset();
     });
+    function koskettaakoInfo() {
+        pallot.forEach((pallo) => {
+            if (pallo.kosketusKattoon == false) {
+                console.log(pallo);
+            }
+        });
+    }
     function luoUusiPlayer() {
         players.forEach((player) => {
             player.x += 30;
