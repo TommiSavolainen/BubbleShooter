@@ -9,7 +9,7 @@
 
 body {
     text-align: center;
-    background-color: gray;
+    background-color: rgb(131, 207, 207);
     margin: 0;
     font-family: 'Poppins', sans-serif;
     user-select: none;
@@ -23,11 +23,12 @@ body {
     transform: translate(-50%, -50%);
     left: 50%;
     top: 50%;
+    border: 1px solid black;
     border-radius: 8px;
     font-family: "Poppins", sans-serif;
 }
 
-.popup button {
+.popup #close {
     display: block;
     margin: 0 0 20px auto;
     background-color: transparent;
@@ -38,9 +39,21 @@ body {
     cursor: pointer;
 }
 
+#uusiPeli{
+    padding: 10px;
+    background-color: #0f72e5;
+    color: #ffff;
+    font-size: 15px;
+    border: 0px;
+    position: relative;
+    text-align: center;
+    margin: auto;
+    display: none;
+}
+
 .popup p{
     font-size: 14px;
-    text-align: justify;
+    text-align: center;
     margin: 20px 0;
 }
 
